@@ -1,0 +1,9 @@
+Stubs for future modules:
+- Tenders
+- Contractors
+- Funds
+- Milestones
+- Payments
+- Inspections
+- Training/Support
+These will be added in future iterations.
