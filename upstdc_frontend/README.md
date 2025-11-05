@@ -4,10 +4,14 @@ Modern, responsive SPA for the Uttar Pradesh Tourism Project Monitoring System.
 
 ## Key Features Implemented
 
+- Cohesive design system with tokens (colors, spacing, radius, shadow) in `src/styles/tokens.css`
+- Updated global styles to match RFP aesthetic (primary #3b82f6, accent #06b6d4)
 - Routing with react-router v6
 - Auth store with JWT handling, persistence, and logout on 401
 - RBAC-protected routes (roles: admin, pmu, engineer, auditor, contractor)
-- Dashboard with KPI cards and Leaflet/OSM map
+- Upgraded MainLayout with refined sidebar/topbar and animated route transitions (framer-motion)
+- Dashboard with KPI cards, lightweight chart blocks, and enhanced Leaflet/OSM map styling
+- Skeleton loaders for perceived performance
 - Projects module (baseline CRUD: list, view, create/update)
 - Image uploads integrated with backend local filesystem endpoint
 - Reports page for file downloads
@@ -44,6 +48,10 @@ We use Leaflet via react-leaflet:
 Leaflet CSS is imported globally in `src/index.css`. We use a CDN import (`https://unpkg.com/leaflet@1.9.4/dist/leaflet.css`) to avoid CI/module resolution issues. If you switch to local CSS import, ensure node_modules is present before building. If you see a runtime error like "Cannot find module 'react-leaflet'", run:
 - npm install
 
+## Motion
+
+We use framer-motion for page transitions and subtle UI motion. If the package is unavailable, the UI gracefully falls back without animation.
+
 ## Environment Variables
 
 See `.env.example`. Mandatory:
@@ -59,7 +67,7 @@ Optional map defaults:
 - src/layout: layout and styles
 - src/pages: route pages (Dashboard, Projects, Uploads, Reports, etc.)
 - src/routes: ProtectedRoute
-- src/components/MapView.jsx: Optional wrapper around react-leaflet with safe fallbacks
+- src/components: MapView and SkeletonCard
 
 ## Notes
 

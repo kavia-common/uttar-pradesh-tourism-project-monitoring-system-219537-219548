@@ -2,23 +2,40 @@ import React, { useState } from 'react';
 import { useAuth } from '../store/auth';
 import './layout.css';
 
-// Guard router imports at module scope
-let Link, NavLink, Outlet;
+/**
+ * Optional: Use framer-motion if available for micro-interactions.
+ * We guard the require so missing deps don't crash CI.
+ */
+let motion = null;
+try {
+  // eslint-disable-next-line global-require
+  motion = require('framer-motion');
+} catch {
+  motion = null;
+}
+
+// Guard router imports at module scope and create stable, safe hooks
+let Link, NavLink, Outlet, useLocationSafe;
 try {
   // eslint-disable-next-line import/no-extraneous-dependencies, global-require
   const RR = require('react-router-dom');
   Link = RR.Link;
   NavLink = RR.NavLink;
   Outlet = RR.Outlet;
+  useLocationSafe = RR.useLocation;
 } catch (e) {
   Link = null;
   NavLink = null;
   Outlet = null;
+  // Stable fallback hook with same call signature
+  useLocationSafe = () => ({ pathname: '/' });
 }
 
 export default function MainLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const { user, logout } = useAuth();
+  // Always call the hook (real or fallback) unconditionally to satisfy Rules of Hooks
+  const location = useLocationSafe();
 
   if (!Link || !NavLink || !Outlet) {
     return (
@@ -30,6 +47,8 @@ export default function MainLayout() {
       </div>
     );
   }
+
+  const MotionDiv = motion?.motion?.div || 'div';
 
   return (
     <div className={`layout ${collapsed ? 'collapsed' : ''}`}>
@@ -55,7 +74,14 @@ export default function MainLayout() {
           </div>
         </header>
         <main className="content">
-          <Outlet />
+          <MotionDiv
+            key={location.pathname}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Outlet />
+          </MotionDiv>
         </main>
         <footer className="footer">© {new Date().getFullYear()} UPSTDC</footer>
       </div>

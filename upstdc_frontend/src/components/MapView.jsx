@@ -5,15 +5,12 @@ import React from 'react';
  * Falls back to a graceful message when libraries are missing.
  */
 let RL = null;
-let leafletCssLoaded = false;
 try {
   // Attempt to require react-leaflet dynamically to avoid build/runtime crashes
   // eslint-disable-next-line import/no-extraneous-dependencies, global-require
   RL = require('react-leaflet');
-  leafletCssLoaded = true;
 } catch (e) {
   RL = null;
-  leafletCssLoaded = false;
 }
 
 // PUBLIC_INTERFACE
@@ -21,9 +18,9 @@ export default function MapView({ center = [26.8467, 80.9462], zoom = 6, markers
   /** Renders a Leaflet map if react-leaflet is available; otherwise renders a helpful fallback. */
   if (!RL) {
     return (
-      <div style={{ ...style, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+      <div style={{ ...style, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-sm)' }}>
         <div style={{ padding: 12, textAlign: 'center' }}>
-          <div style={{ fontWeight: 600, marginBottom: 6 }}>Map unavailable</div>
+          <div style={{ fontWeight: 700, marginBottom: 6 }}>Map unavailable</div>
           <div style={{ fontSize: 12, color: 'var(--muted)' }}>
             Map libraries are not loaded. Please run: npm install
           </div>
@@ -35,7 +32,7 @@ export default function MapView({ center = [26.8467, 80.9462], zoom = 6, markers
   const { MapContainer, TileLayer, Marker, Popup } = RL;
 
   return (
-    <div style={style}>
+    <div style={{ ...style }}>
       <MapContainer center={center} zoom={zoom} style={{ height: '100%', width: '100%' }}>
         <TileLayer
           // OpenStreetMap standard tiles

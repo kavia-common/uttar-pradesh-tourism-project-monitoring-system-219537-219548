@@ -66,7 +66,12 @@ export default function ProjectsList() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={4}>Loading...</td></tr>
+              <tr>
+                <td colSpan={4}>
+                  <div className="skeleton" style={{ height: 18, marginBottom: 8 }} />
+                  <div className="skeleton" style={{ height: 18, width: '70%' }} />
+                </td>
+              </tr>
             ) : items.length === 0 ? (
               <tr><td colSpan={4}>No projects found</td></tr>
             ) : items.map(p=>(

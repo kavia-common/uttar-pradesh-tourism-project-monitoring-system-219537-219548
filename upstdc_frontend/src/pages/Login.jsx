@@ -41,7 +41,7 @@ export default function Login() {
     <div className="content" style={{maxWidth:420, margin:'60px auto'}}>
       <div className="card">
         <h2>Sign in</h2>
-        {err && <div className="badge" style={{background:'#EF4444', marginBottom:8}}>{err}</div>}
+        {err && <div className="badge" style={{background:'var(--color-error)', marginBottom:8}}>{err}</div>}
         <form onSubmit={onSubmit}>
           <div className="form-row">
             <div>
