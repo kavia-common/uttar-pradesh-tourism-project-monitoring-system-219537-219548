@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
-let RR = null;
-try {
-  // eslint-disable-next-line import/no-extraneous-dependencies
-  RR = require('react-router-dom');
-} catch (e) {
-  RR = null;
-}
 import { AuthAPI } from '../api/client';
 import { useAuth } from '../store/auth';
 
+// Guard navigate at module scope with a stable fallback
+let useNavigateSafe = () => {
+  // no-op navigate replacement
+  return (/* path, opts */) => {};
+};
+try {
+  // eslint-disable-next-line import/no-extraneous-dependencies, global-require
+  const RR = require('react-router-dom');
+  useNavigateSafe = RR.useNavigate;
+} catch {
+  // keep fallback
+}
+
 export default function Login() {
   const { login } = useAuth();
-  const nav = RR ? RR.useNavigate() : () => {};
+  const navigate = useNavigateSafe(); // always call a hook (real or fallback) in the same order
   const [form, setForm] = useState({ email: '', password: '' });
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,7 +29,7 @@ export default function Login() {
     try {
       const data = await AuthAPI.login(form);
       await login(data);
-      if (RR) nav('/dashboard', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       setErr(error.message || 'Login failed');
     } finally {

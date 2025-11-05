@@ -1,12 +1,4 @@
 import React from 'react';
-let RR;
-try {
-  // Attempt to load react-router-dom normally
-  // eslint-disable-next-line import/no-extraneous-dependencies
-  RR = require('react-router-dom');
-} catch (e) {
-  RR = null;
-}
 import { AuthProvider } from './store/auth';
 import ProtectedRoute from './routes/ProtectedRoute';
 import MainLayout from './layout/MainLayout';
@@ -21,18 +13,34 @@ import Uploads from './pages/Uploads';
 import Reports from './pages/Reports';
 import Help from './pages/Help';
 
+// Attempt to import router types safely once at module scope.
+// If it fails at runtime (e.g., before npm install), we fall back to a friendly message.
+let BrowserRouter, Routes, Route, Navigate;
+try {
+  // eslint-disable-next-line import/no-extraneous-dependencies, global-require
+  const RR = require('react-router-dom');
+  BrowserRouter = RR.BrowserRouter;
+  Routes = RR.Routes;
+  Route = RR.Route;
+  Navigate = RR.Navigate;
+} catch (e) {
+  BrowserRouter = null;
+  Routes = null;
+  Route = null;
+  Navigate = null;
+}
+
 // PUBLIC_INTERFACE
 export default function AppRouter() {
   /** Application router with RBAC protected sections and main layout */
-  if (!RR) {
+  if (!BrowserRouter || !Routes || !Route || !Navigate) {
     return (
-      <div style={{padding:20}}>
+      <div style={{ padding: 20 }}>
         <h3>Starting...</h3>
         <p>Router libraries are being installed. Please run npm install and restart.</p>
       </div>
     );
   }
-  const { BrowserRouter, Routes, Route, Navigate } = RR;
 
   return (
     <AuthProvider>

@@ -1,13 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import { ProjectsAPI } from '../../api/client';
+
+let useParamsSafe = () => ({ id: null });
+let useNavigateSafe = () => {
+  return (/* path, opts */) => {};
+};
+try {
+  // eslint-disable-next-line import/no-extraneous-dependencies, global-require
+  const RR = require('react-router-dom');
+  useParamsSafe = RR.useParams;
+  useNavigateSafe = RR.useNavigate;
+} catch {
+  // keep fallbacks
+}
 
 const initial = { name: '', status: 'Planned', budget: '' };
 
+// PUBLIC_INTERFACE
 export default function ProjectForm() {
-  const { id } = useParams();
+  /** Project create/edit form with safe router fallbacks */
+  const params = useParamsSafe();
+  const navigate = useNavigateSafe();
+  const { id } = params || {};
   const isEdit = !!id && id !== 'new';
-  const nav = useNavigate();
   const [form, setForm] = useState(initial);
   const [loading, setLoading] = useState(false);
 
@@ -42,7 +57,7 @@ export default function ProjectForm() {
       } else {
         await ProjectsAPI.create(payload);
       }
-      nav('/projects');
+      navigate('/projects');
     } catch (err) {
       alert('Save failed: ' + (err.message || 'Unknown error'));
     } finally {
@@ -77,7 +92,7 @@ export default function ProjectForm() {
         </div>
         <div className="actions" style={{marginTop:12}}>
           <button className="btn" type="submit" disabled={loading}>{loading ? 'Saving...' : 'Save'}</button>
-          <button type="button" className="btn" style={{background:'#64748b'}} onClick={()=>RR && nav('/projects')}>Cancel</button>
+          <button type="button" className="btn" style={{background:'#64748b'}} onClick={()=> navigate('/projects')}>Cancel</button>
         </div>
       </form>
     </div>

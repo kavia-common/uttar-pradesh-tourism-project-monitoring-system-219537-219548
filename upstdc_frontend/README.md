@@ -35,6 +35,15 @@ then retry npm start.
 4. Run tests:
    npm test
 
+## Map Dependencies
+
+We use Leaflet via react-leaflet:
+- react-leaflet
+- leaflet
+
+Leaflet CSS is imported globally in `src/index.css`. We use a CDN import (`https://unpkg.com/leaflet@1.9.4/dist/leaflet.css`) to avoid CI/module resolution issues. If you switch to local CSS import, ensure node_modules is present before building. If you see a runtime error like "Cannot find module 'react-leaflet'", run:
+- npm install
+
 ## Environment Variables
 
 See `.env.example`. Mandatory:
@@ -50,6 +59,7 @@ Optional map defaults:
 - src/layout: layout and styles
 - src/pages: route pages (Dashboard, Projects, Uploads, Reports, etc.)
 - src/routes: ProtectedRoute
+- src/components/MapView.jsx: Optional wrapper around react-leaflet with safe fallbacks
 
 ## Notes
 

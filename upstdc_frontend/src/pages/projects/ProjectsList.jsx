@@ -1,12 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { ProjectsAPI } from '../../api/client';
 
+// Guard router at module scope with stable fallbacks
+let Link = (props) => <span {...props} />;
+let useNavigateSafe = () => {
+  return (/* path, opts */) => {};
+};
+try {
+  // eslint-disable-next-line import/no-extraneous-dependencies, global-require
+  const RR = require('react-router-dom');
+  Link = RR.Link;
+  useNavigateSafe = RR.useNavigate;
+} catch {
+  // keep fallbacks
+}
+
+// PUBLIC_INTERFACE
 export default function ProjectsList() {
+  /** Projects list with guarded routing utilities to avoid build-time failures */
   const [items, setItems] = useState([]);
   const [q, setQ] = useState('');
   const [loading, setLoading] = useState(true);
-  const nav = useNavigate();
+  const navigate = useNavigateSafe();
 
   const load = async () => {
     setLoading(true);
@@ -25,6 +40,8 @@ export default function ProjectsList() {
 
   useEffect(()=>{ load(); },[]);
 
+  const LinkEl = Link;
+
   return (
     <div className="grid" style={{gap:16}}>
       <div className="card">
@@ -33,7 +50,7 @@ export default function ProjectsList() {
             <input className="input" placeholder="Search..." value={q} onChange={e=>setQ(e.target.value)} />
             <button className="btn" onClick={load}>Search</button>
           </div>
-          <button className="btn" onClick={()=>nav('/projects/new')}>New Project</button>
+          <button className="btn" onClick={()=> navigate('/projects/new')}>New Project</button>
         </div>
       </div>
 
@@ -54,11 +71,11 @@ export default function ProjectsList() {
               <tr><td colSpan={4}>No projects found</td></tr>
             ) : items.map(p=>(
               <tr key={p._id}>
-                <td><Link to={`/projects/${p._id}`}>{p.name}</Link></td>
+                <td><LinkEl to={`/projects/${p._id}`}>{p.name}</LinkEl></td>
                 <td><span className="badge">{p.status || 'N/A'}</span></td>
                 <td>{p.budget ? `₹ ${p.budget.toLocaleString()}` : '-'}</td>
                 <td className="actions">
-                  <Link className="btn" to={`/projects/${p._id}/edit`}>Edit</Link>
+                  <LinkEl className="btn" to={`/projects/${p._id}/edit`}>Edit</LinkEl>
                   <button className="btn" style={{background:'#EF4444'}} onClick={async ()=>{
                     if (!window.confirm('Delete project?')) return;
                     try {

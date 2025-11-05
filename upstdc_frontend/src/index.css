@@ -1,3 +1,6 @@
+/* Leaflet CSS via CDN to avoid module resolution issues during builds */
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+
 body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";

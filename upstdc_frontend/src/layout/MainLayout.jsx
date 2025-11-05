@@ -1,19 +1,26 @@
 import React, { useState } from 'react';
-let RR = null;
-try {
-  // eslint-disable-next-line import/no-extraneous-dependencies
-  RR = require('react-router-dom');
-} catch (e) {
-  RR = null;
-}
 import { useAuth } from '../store/auth';
 import './layout.css';
+
+// Guard router imports at module scope
+let Link, NavLink, Outlet;
+try {
+  // eslint-disable-next-line import/no-extraneous-dependencies, global-require
+  const RR = require('react-router-dom');
+  Link = RR.Link;
+  NavLink = RR.NavLink;
+  Outlet = RR.Outlet;
+} catch (e) {
+  Link = null;
+  NavLink = null;
+  Outlet = null;
+}
 
 export default function MainLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const { user, logout } = useAuth();
 
-  if (!RR) {
+  if (!Link || !NavLink || !Outlet) {
     return (
       <div className="content" style={{padding:20}}>
         <div className="card">
@@ -23,8 +30,6 @@ export default function MainLayout() {
       </div>
     );
   }
-
-  const { Link, NavLink, Outlet } = RR;
 
   return (
     <div className={`layout ${collapsed ? 'collapsed' : ''}`}>
@@ -50,7 +55,7 @@ export default function MainLayout() {
           </div>
         </header>
         <main className="content">
-          <RR.Outlet />
+          <Outlet />
         </main>
         <footer className="footer">© {new Date().getFullYear()} UPSTDC</footer>
       </div>
