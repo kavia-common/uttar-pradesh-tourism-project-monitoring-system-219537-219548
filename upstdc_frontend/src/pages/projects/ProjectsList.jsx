@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ProjectsAPI } from '../../api/client';
+import Table from '../../components/ui/Table';
+import Button from '../../components/ui/Button';
+import PageHeader from '../../layout/PageHeader';
 
 // Guard router at module scope with stable fallbacks
 let Link = (props) => <span {...props} />;
@@ -43,45 +46,43 @@ export default function ProjectsList() {
   const LinkEl = Link;
 
   return (
-    <div className="grid" style={{gap:16}}>
+    <div className="grid" style={{ gap: 16 }}>
+      <PageHeader
+        title="Projects"
+        breadcrumbs={[{ label: 'Home', href: '/dashboard' }, { label: 'Projects' }]}
+        actions={
+          <Button onClick={() => navigate('/projects/new')}>New Project</Button>
+        }
+      />
       <div className="card">
-        <div className="actions" style={{justifyContent:'space-between'}}>
-          <div style={{display:'flex', gap:8}}>
-            <input className="input" placeholder="Search..." value={q} onChange={e=>setQ(e.target.value)} />
-            <button className="btn" onClick={load}>Search</button>
+        <div className="actions" style={{ justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <input
+              className="input"
+              placeholder="Search..."
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+            />
+            <Button variant="ghost" onClick={load}>Search</Button>
           </div>
-          <button className="btn" onClick={()=> navigate('/projects/new')}>New Project</button>
         </div>
       </div>
 
-      <div className="card">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Status</th>
-              <th>Budget</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={4}>
-                  <div className="skeleton" style={{ height: 18, marginBottom: 8 }} />
-                  <div className="skeleton" style={{ height: 18, width: '70%' }} />
-                </td>
-              </tr>
-            ) : items.length === 0 ? (
-              <tr><td colSpan={4}>No projects found</td></tr>
-            ) : items.map(p=>(
-              <tr key={p._id}>
-                <td><LinkEl to={`/projects/${p._id}`}>{p.name}</LinkEl></td>
-                <td><span className="badge">{p.status || 'N/A'}</span></td>
-                <td>{p.budget ? `₹ ${p.budget.toLocaleString()}` : '-'}</td>
-                <td className="actions">
-                  <LinkEl className="btn" to={`/projects/${p._id}/edit`}>Edit</LinkEl>
-                  <button className="btn" style={{background:'#EF4444'}} onClick={async ()=>{
+      <Table
+        loading={loading}
+        columns={[
+          { key: 'name', header: 'Name', render: (p) => <LinkEl to={`/projects/${p._id}`}>{p.name}</LinkEl> },
+          { key: 'status', header: 'Status', render: (p) => <span className="badge">{p.status || 'N/A'}</span> },
+          { key: 'budget', header: 'Budget', render: (p) => (p.budget ? `₹ ${p.budget.toLocaleString()}` : '-') },
+          {
+            key: 'actions',
+            header: 'Actions',
+            render: (p) => (
+              <div className="actions">
+                <LinkEl className="btn" to={`/projects/${p._id}/edit`}>Edit</LinkEl>
+                <Button
+                  variant="danger"
+                  onClick={async () => {
                     if (!window.confirm('Delete project?')) return;
                     try {
                       await ProjectsAPI.remove(p._id);
@@ -89,13 +90,17 @@ export default function ProjectsList() {
                     } catch (e) {
                       alert('Delete failed: ' + e.message);
                     }
-                  }}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            )
+          }
+        ]}
+        data={items}
+        empty="No projects found"
+      />
     </div>
   );
 }

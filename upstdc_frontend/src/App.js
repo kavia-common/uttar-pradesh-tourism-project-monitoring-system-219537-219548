@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import AppRouter from './AppRouter';
+import { ToastProvider } from './components/ui/Toast';
 
 function App() {
   const [theme, setTheme] = useState('light');
@@ -17,7 +18,9 @@ function App() {
       >
         {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
       </button>
-      <AppRouter />
+      <ToastProvider>
+        <AppRouter />
+      </ToastProvider>
     </div>
   );
 }

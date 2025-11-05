@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ProjectsAPI } from '../../api/client';
+import PageHeader from '../../layout/PageHeader';
+import Button from '../../components/ui/Button';
 
 let useParamsSafe = () => ({ id: null });
 let LinkSafe = (props) => <span {...props} />;
@@ -37,16 +39,27 @@ export default function ProjectView() {
   const LinkEl = LinkSafe;
 
   return (
-    <div className="grid" style={{gap:16}}>
+    <div className="grid" style={{ gap: 16 }}>
+      <PageHeader
+        title={item.name}
+        breadcrumbs={[
+          { label: 'Home', href: '/dashboard' },
+          { label: 'Projects', href: '/projects' },
+          { label: 'View' }
+        ]}
+        actions={
+          <>
+            <LinkEl className="btn" to={`/projects/${id || item._id}/edit`}>Edit</LinkEl>
+            <LinkEl className="btn" style={{ background: '#64748b' }} to="/projects">Back</LinkEl>
+          </>
+        }
+      />
       <div className="card">
-        <h3>{item.name}</h3>
         <div className="badge">{item.status}</div>
-        <p style={{marginTop:8}}>Budget: {item.budget ? `₹ ${item.budget.toLocaleString()}` : '-'}</p>
+        <p style={{ marginTop: 8 }}>
+          Budget: {item.budget ? `₹ ${item.budget.toLocaleString()}` : '-'}
+        </p>
         {item.description && <p>{item.description}</p>}
-        <div className="actions">
-          <LinkEl className="btn" to={`/projects/${id || item._id}/edit`}>Edit</LinkEl>
-          <LinkEl className="btn" style={{background:'#64748b'}} to="/projects">Back</LinkEl>
-        </div>
       </div>
     </div>
   );

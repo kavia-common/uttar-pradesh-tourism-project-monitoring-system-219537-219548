@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { ReportsAPI } from '../api/client';
+import Button from '../components/ui/Button';
+import PageHeader from '../layout/PageHeader';
 
 export default function Reports() {
   const [key, setKey] = useState('projects-summary');
@@ -25,18 +27,20 @@ export default function Reports() {
   };
 
   return (
-    <div className="card" style={{maxWidth:600}}>
-      <h3>Reports</h3>
-      <label>Report Type</label>
-      <select className="input" value={key} onChange={e=>setKey(e.target.value)}>
-        <option value="projects-summary">Projects Summary</option>
-        <option value="funds-utilization">Funds Utilization</option>
-        <option value="inspections">Inspections</option>
-      </select>
-      <div className="actions" style={{marginTop:12}}>
-        <button className="btn" disabled={downloading} onClick={download}>
-          {downloading ? 'Preparing...' : 'Download'}
-        </button>
+    <div style={{ maxWidth: 700 }}>
+      <PageHeader title="Reports" breadcrumbs={[{ label: 'Home', href: '/dashboard' }, { label: 'Reports' }]} />
+      <div className="card">
+        <label>Report Type</label>
+        <select className="input" value={key} onChange={e=>setKey(e.target.value)}>
+          <option value="projects-summary">Projects Summary</option>
+          <option value="funds-utilization">Funds Utilization</option>
+          <option value="inspections">Inspections</option>
+        </select>
+        <div className="actions" style={{marginTop:12}}>
+          <Button disabled={downloading} onClick={download}>
+            {downloading ? 'Preparing...' : 'Download'}
+          </Button>
+        </div>
       </div>
     </div>
   );

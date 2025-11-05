@@ -1,5 +1,6 @@
 import React from 'react';
 import MapView from '../components/MapView';
+import KPIStat from '../components/ui/KPIStat';
 
 /**
  * Dashboard uses design tokens, subtle motion (if available), and enhanced map styling.
@@ -55,19 +56,11 @@ export default function Dashboard() {
         {kpis.map((k, idx) => (
           <MotionDiv
             key={k.title}
-            className="kpi-card"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: (idx || 0) * 0.05, duration: 0.2 }}
           >
-            <div>
-              <div className="label">{k.title}</div>
-              <div className="value">{k.value}</div>
-            </div>
-            <div style={{
-              width: 36, height: 36, borderRadius: 10,
-              background: k.color, opacity: .12, boxShadow: 'inset 0 0 0 1px rgba(0,0,0,.04)'
-            }} />
+            <KPIStat label={k.title} value={k.value} color={k.color} />
           </MotionDiv>
         ))}
       </div>

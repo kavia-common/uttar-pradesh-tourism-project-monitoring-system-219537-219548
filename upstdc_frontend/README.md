@@ -5,19 +5,21 @@ Modern, responsive SPA for the Uttar Pradesh Tourism Project Monitoring System.
 ## Key Features Implemented
 
 - Cohesive design system with tokens (colors, spacing, radius, shadow) in `src/styles/tokens.css`
+- Global UI helpers in `src/styles/ui.css`
 - Updated global styles to match RFP aesthetic (primary #3b82f6, accent #06b6d4)
-- Routing with react-router v6
+- Routing with react-router v6 and RBAC route guards
 - Auth store with JWT handling, persistence, and logout on 401
-- RBAC-protected routes (roles: admin, pmu, engineer, auditor, contractor)
-- Upgraded MainLayout with refined sidebar/topbar and animated route transitions (framer-motion)
-- Dashboard with KPI cards, lightweight chart blocks, and enhanced Leaflet/OSM map styling
+- MainLayout with Sidebar, Topbar, Breadcrumbs, PageHeader and animated route transitions (framer-motion with safe fallback)
+- Dashboard with KPI cards (`KPIStat`), lightweight chart placeholders, and enhanced Leaflet/OSM map styling via `MapView`
+- Reusable UI components: `Button`, `Input`, `Table`, `Modal`, `Toast`, `Skeleton`
 - Skeleton loaders for perceived performance
-- Projects module (baseline CRUD: list, view, create/update)
+- Projects module (CRUD: list, view, create/update) using reusable components
 - Image uploads integrated with backend local filesystem endpoint
 - Reports page for file downloads
 - Light/Dark theme toggle and consistent theme per style guide
 - Basic tests and CI-friendly test script
-- .env.example with REACT_APP_API_BASE -> backend on port 3001
+- `.env.example` with `REACT_APP_API_BASE` -> backend on port 3001
+- Toast system wired at App root
 
 ## Getting Started
 
@@ -64,10 +66,12 @@ Optional map defaults:
 
 - src/api: API client and resource helpers
 - src/store: global auth store/context
-- src/layout: layout and styles
-- src/pages: route pages (Dashboard, Projects, Uploads, Reports, etc.)
+- src/layout: layout and styles (MainLayout, Breadcrumbs, PageHeader)
+- src/pages: route pages (Dashboard, Projects, Uploads, Reports, Help, Auth, Unauthorized)
 - src/routes: ProtectedRoute
-- src/components: MapView and SkeletonCard
+- src/components:
+  - MapView and SkeletonCard
+  - ui/: Button, Input, Table, Modal, Toast, Skeleton, KPIStat
 
 ## Notes
 

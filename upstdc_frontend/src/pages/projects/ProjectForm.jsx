@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ProjectsAPI } from '../../api/client';
+import Input from '../../components/ui/Input';
+import Button from '../../components/ui/Button';
+import PageHeader from '../../layout/PageHeader';
 
 let useParamsSafe = () => ({ id: null });
 let useNavigateSafe = () => {
@@ -66,35 +69,64 @@ export default function ProjectForm() {
   };
 
   return (
-    <div className="card" style={{maxWidth:800}}>
-      <h3>{isEdit ? 'Edit Project' : 'New Project'}</h3>
-      <form onSubmit={onSubmit}>
-        <div className="form-row">
-          <div>
-            <label>Name</label>
-            <input className="input" value={form.name} onChange={e=>setForm({...form, name:e.target.value})} required />
+    <div style={{ maxWidth: 900 }}>
+      <PageHeader
+        title={isEdit ? 'Edit Project' : 'New Project'}
+        breadcrumbs={[
+          { label: 'Home', href: '/dashboard' },
+          { label: 'Projects', href: '/projects' },
+          { label: isEdit ? 'Edit' : 'Create' }
+        ]}
+      />
+      <div className="card">
+        <form onSubmit={onSubmit}>
+          <div className="form-row">
+            <div>
+              <Input
+                label="Name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <label>Status</label>
+              <select
+                className="input"
+                value={form.status}
+                onChange={(e) => setForm({ ...form, status: e.target.value })}
+              >
+                <option>Planned</option>
+                <option>In Progress</option>
+                <option>Completed</option>
+                <option>On Hold</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label>Status</label>
-            <select className="input" value={form.status} onChange={e=>setForm({...form, status:e.target.value})}>
-              <option>Planned</option>
-              <option>In Progress</option>
-              <option>Completed</option>
-              <option>On Hold</option>
-            </select>
+          <div className="form-row" style={{ marginTop: 12 }}>
+            <div>
+              <Input
+                label="Budget (₹)"
+                type="number"
+                value={form.budget}
+                onChange={(e) => setForm({ ...form, budget: e.target.value })}
+              />
+            </div>
           </div>
-        </div>
-        <div className="form-row" style={{marginTop:12}}>
-          <div>
-            <label>Budget (₹)</label>
-            <input className="input" type="number" value={form.budget} onChange={e=>setForm({...form, budget:e.target.value})} />
+          <div className="actions" style={{ marginTop: 12 }}>
+            <Button type="submit" disabled={loading}>
+              {loading ? 'Saving...' : 'Save'}
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => navigate('/projects')}
+            >
+              Cancel
+            </Button>
           </div>
-        </div>
-        <div className="actions" style={{marginTop:12}}>
-          <button className="btn" type="submit" disabled={loading}>{loading ? 'Saving...' : 'Save'}</button>
-          <button type="button" className="btn" style={{background:'#64748b'}} onClick={()=> navigate('/projects')}>Cancel</button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
