@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ProjectsAPI } from '../../api/client';
 import Table from '../../components/ui/Table';
 import Button from '../../components/ui/Button';
 import PageHeader from '../../layout/PageHeader';
+import MapView from '../../components/MapView';
 
 // Guard router at module scope with stable fallbacks
 let Link = (props) => <span {...props} />;
@@ -25,6 +26,37 @@ export default function ProjectsList() {
   const [q, setQ] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigateSafe();
+
+  // Optional map wiring: store marker refs and map instance to enable pan/zoom
+  const markerRefs = useRef(new Map());
+  const mapRef = useRef(null);
+
+  const onMarkerReady = (project, ref) => {
+    try {
+      const id = project._id || project.id || project.code;
+      if (id) markerRefs.current.set(String(id), ref);
+    } catch {
+      // ignore
+    }
+  };
+  const onMapReady = (map) => {
+    mapRef.current = map;
+  };
+
+  const defaultCenter = useMemo(() => [parseFloat(process.env.REACT_APP_DEFAULT_LAT || '26.8467'), parseFloat(process.env.REACT_APP_DEFAULT_LNG || '80.9462')], []);
+  const defaultZoom = useMemo(() => parseInt(process.env.REACT_APP_DEFAULT_ZOOM || '6', 10), []);
+
+  const panToProject = (p) => {
+    const lat = p?.lat ?? p?.location?.coordinates?.[1] ?? p?.location?.geometry?.coordinates?.[1];
+    const lng = p?.lng ?? p?.location?.coordinates?.[0] ?? p?.location?.geometry?.coordinates?.[0];
+    if (mapRef.current && typeof lat === 'number' && typeof lng === 'number') {
+      try {
+        mapRef.current.setView([lat, lng], Math.max(defaultZoom, 10), { animate: true });
+      } catch {
+        // ignore
+      }
+    }
+  };
 
   const load = async () => {
     setLoading(true);
@@ -71,7 +103,20 @@ export default function ProjectsList() {
       <Table
         loading={loading}
         columns={[
-          { key: 'name', header: 'Name', render: (p) => <LinkEl to={`/projects/${p._id}`}>{p.name}</LinkEl> },
+          { key: 'name', header: 'Name', render: (p) => (
+            <span style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
+              <LinkEl to={`/projects/${p._id}`}>{p.name}</LinkEl>
+              <button
+                className="btn btn--sm btn--ghost"
+                onClick={() => panToProject(p)}
+                title="Locate on map"
+                aria-label={`Locate ${p.name} on map`}
+                type="button"
+              >
+                📍
+              </button>
+            </span>
+          ) },
           { key: 'status', header: 'Status', render: (p) => <span className="badge">{p.status || 'N/A'}</span> },
           { key: 'budget', header: 'Budget', render: (p) => (p.budget ? `₹ ${p.budget.toLocaleString()}` : '-') },
           {

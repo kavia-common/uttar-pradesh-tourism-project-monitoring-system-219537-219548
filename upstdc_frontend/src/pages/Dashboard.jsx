@@ -30,8 +30,39 @@ export default function Dashboard() {
   ];
 
   const demoProjects = [
-    { id: 1, name: 'Riverfront Beautification', lat: 26.8467, lng: 80.9462 },
-    { id: 2, name: 'Fort Restoration', lat: 27.1767, lng: 78.0081 },
+    {
+      id: 'PJT-001',
+      code: 'PJT-001',
+      name: 'Riverfront Beautification',
+      status: 'In Progress',
+      budget: 45000000,
+      district: 'Lucknow',
+      description: 'Upgrading ghats, promenade, lighting and visitor amenities along the riverfront.',
+      lat: 26.8467,
+      lng: 80.9462
+    },
+    {
+      id: 'PJT-002',
+      code: 'PJT-002',
+      name: 'Fort Restoration',
+      status: 'Planned',
+      budget: 18000000,
+      district: 'Agra',
+      description: 'Structural restoration and conservation of historic fort walls and gates.',
+      lat: 27.1767,
+      lng: 78.0081
+    },
+    // Example with missing coordinates to validate graceful skipping
+    {
+      id: 'PJT-003',
+      code: 'PJT-003',
+      name: 'Eco-Trail Development',
+      status: 'On Hold',
+      budget: 7500000,
+      district: 'Varanasi',
+      description: 'Creating eco-friendly walking trails with interpretative signage.',
+      // no lat/lng provided intentionally
+    }
   ];
 
   // Simple bar-chart-like skeleton
