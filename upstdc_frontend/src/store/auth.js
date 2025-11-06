@@ -23,6 +23,7 @@ export const clearStoredUser = () => localStorage.removeItem(USER_KEY);
 
 // PUBLIC_INTERFACE
 export const logout = () => {
+  // keep storage clear for consistency
   clearToken();
   clearStoredUser();
 };
@@ -31,23 +32,29 @@ const AuthContext = createContext(null);
 
 // PUBLIC_INTERFACE
 export function AuthProvider({ children }) {
-  /** Auth provider storing user and token with RBAC utilities */
-  const [token, setTok] = useState(getToken());
-  const [user, setUser] = useState(getStoredUser());
+  /** Auth provider now defaults to a guest authenticated state for open access */
+  // Create a default guest identity
+  const defaultGuest = { name: 'Guest User', role: 'guest' };
+  const [token, setTok] = useState(getToken() || 'guest-token');
+  const [user, setUser] = useState(getStoredUser() || defaultGuest);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setTok(getToken());
-    setUser(getStoredUser());
+    // Ensure we persist the guest session so refreshes keep access
+    if (!getToken()) setToken('guest-token');
+    if (!getStoredUser()) setStoredUser(defaultGuest);
+    setTok(getToken() || 'guest-token');
+    setUser(getStoredUser() || defaultGuest);
   }, []);
 
   const login = async ({ access_token, user: profile }) => {
     setLoading(true);
     try {
-      setToken(access_token);
-      setStoredUser(profile);
-      setTok(access_token);
-      setUser(profile);
+      // Still support explicit login if ever used, but not required
+      setToken(access_token || 'guest-token');
+      setStoredUser(profile || defaultGuest);
+      setTok(access_token || 'guest-token');
+      setUser(profile || defaultGuest);
       return true;
     } finally {
       setLoading(false);
@@ -55,15 +62,17 @@ export function AuthProvider({ children }) {
   };
 
   const doLogout = () => {
+    // On logout, revert to guest instead of unauthenticated
     logout();
-    setTok(null);
-    setUser(null);
+    setTok('guest-token');
+    setUser(defaultGuest);
+    setToken('guest-token');
+    setStoredUser(defaultGuest);
   };
 
   const hasRole = (roles) => {
-    if (!user || !user.role) return false;
-    if (Array.isArray(roles)) return roles.includes(user.role);
-    return user.role === roles;
+    // Bypass role checks: allow access to all roles for guest mode
+    return true;
   };
 
   const value = useMemo(() => ({
@@ -72,7 +81,7 @@ export function AuthProvider({ children }) {
     loading,
     login,
     logout: doLogout,
-    isAuthenticated: !!token,
+    isAuthenticated: true, // always authenticated in guest mode
     hasRole
   }), [token, user, loading]);
 

@@ -33,7 +33,7 @@ try {
 
 export default function MainLayout() {
   const [collapsed, setCollapsed] = useState(false);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   // Always call the hook (real or fallback) unconditionally to satisfy Rules of Hooks
   const location = useLocationSafe();
 
@@ -69,8 +69,7 @@ export default function MainLayout() {
           <button className="icon-btn" onClick={() => setCollapsed(!collapsed)} aria-label="Toggle Sidebar">☰</button>
           <div className="spacer" />
           <div className="user">
-            <span className="user-name">{user?.name || user?.email || 'User'}</span>
-            <button className="btn" onClick={logout}>Logout</button>
+            <span className="user-name">{user?.name || user?.email || 'Guest'}</span>
           </div>
         </header>
         <main className="content">

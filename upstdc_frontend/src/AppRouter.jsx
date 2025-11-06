@@ -3,8 +3,6 @@ import { AuthProvider } from './store/auth';
 import ProtectedRoute from './routes/ProtectedRoute';
 import MainLayout from './layout/MainLayout';
 
-import Login from './pages/Login';
-import Unauthorized from './pages/Unauthorized';
 import Dashboard from './pages/Dashboard';
 import ProjectsList from './pages/projects/ProjectsList';
 import ProjectForm from './pages/projects/ProjectForm';
@@ -32,7 +30,7 @@ try {
 
 // PUBLIC_INTERFACE
 export default function AppRouter() {
-  /** Application router with RBAC protected sections and main layout */
+  /** Application router with open access (auth bypass enabled) */
   if (!BrowserRouter || !Routes || !Route || !Navigate) {
     return (
       <div style={{ padding: 20 }}>
@@ -47,10 +45,8 @@ export default function AppRouter() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
-
-          <Route element={<ProtectedRoute roles={['admin','pmu','engineer','auditor','contractor']} />}>
+          {/* Keep ProtectedRoute wrapper for structure, but it now always allows access */}
+          <Route element={<ProtectedRoute />}>
             <Route element={<MainLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/projects" element={<ProjectsList />} />

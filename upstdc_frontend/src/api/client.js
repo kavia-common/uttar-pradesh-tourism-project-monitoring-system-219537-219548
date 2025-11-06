@@ -1,4 +1,4 @@
-import { getToken, logout } from '../store/auth';
+import { getToken } from '../store/auth';
 
 // PUBLIC_INTERFACE
 export const getApiBase = () => {
@@ -10,7 +10,7 @@ export const getApiBase = () => {
 // PUBLIC_INTERFACE
 export async function apiRequest(path, { method = 'GET', body, headers = {}, responseType = 'json' } = {}) {
   /**
-   * Generic API request with JWT token injection and 401 handling.
+   * Generic API request with optional token injection and relaxed 401 handling for guest mode.
    * path: string - endpoint path starting with '/'
    * options: method, body (object or FormData), headers, responseType ('json'|'blob'|'text')
    */
@@ -24,6 +24,7 @@ export async function apiRequest(path, { method = 'GET', body, headers = {}, res
     finalHeaders.set('Content-Type', 'application/json');
     requestBody = JSON.stringify(body);
   }
+  // Include token if present (guest-token or real)
   if (token) {
     finalHeaders.set('Authorization', `Bearer ${token}`);
   }
@@ -36,11 +37,7 @@ export async function apiRequest(path, { method = 'GET', body, headers = {}, res
   });
 
   if (res.status === 401) {
-    logout();
-    // Redirect to login
-    if (window.location.pathname !== '/login') {
-      window.location.href = '/login';
-    }
+    // Do not redirect in guest mode; just surface an error
     throw new Error('Unauthorized');
   }
 
