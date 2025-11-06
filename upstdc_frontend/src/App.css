@@ -26,6 +26,7 @@
 }
 .theme-toggle:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 .theme-toggle:active { transform: translateY(0); }
+.theme-toggle:focus-visible { box-shadow: var(--focus-ring), var(--shadow); }
 
 @media (max-width: 768px) {
   .theme-toggle { padding: 8px 12px; font-size: 12px; bottom: var(--space-3); right: var(--space-3); }

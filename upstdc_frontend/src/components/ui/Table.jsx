@@ -8,12 +8,12 @@ import React from 'react';
 // PUBLIC_INTERFACE
 export default function Table({ columns = [], data = [], empty = 'No data', loading = false }) {
   return (
-    <div className="table-wrapper card">
+    <div className="table-wrapper card" role="region" aria-live="polite">
       <table className="table">
         <thead>
           <tr>
             {columns.map(c => (
-              <th key={c.key || c.header}>{c.header}</th>
+              <th key={c.key || c.header} scope="col">{c.header}</th>
             ))}
           </tr>
         </thead>
@@ -27,7 +27,7 @@ export default function Table({ columns = [], data = [], empty = 'No data', load
             </tr>
           ) : data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className="text-muted">{empty}</td>
+              <td colSpan={columns.length} className="empty">{empty}</td>
             </tr>
           ) : (
             data.map((row, idx) => (

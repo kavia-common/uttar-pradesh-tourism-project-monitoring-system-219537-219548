@@ -4,6 +4,7 @@ import './index.css';
 import './layout/layout.css';
 import './styles/ui.css';
 import App from './App';
+import './components/ui/button.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -59,6 +59,7 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: (idx || 0) * 0.05, duration: 0.2 }}
+            className="hover-rise"
           >
             <KPIStat label={k.title} value={k.value} color={k.color} />
           </MotionDiv>
@@ -66,7 +67,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid" style={{ gridTemplateColumns: '1.2fr .8fr' }}>
-        <div className="card">
+        <div className="card hover-rise">
           <h3 style={{ marginBottom: 8 }}>Project Locations</h3>
           <MapView
             center={[defaultLat, defaultLng]}

@@ -16,24 +16,19 @@ export default function Button({
 }) {
   const Comp = as;
 
-  const base =
-    'btn-ui inline-flex items-center justify-center rounded transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1';
+  // Base uses CSS variables and native hover/active transitions; relies on global :focus-visible
+  const base = 'btn-ui';
   const variants = {
-    primary:
-      'bg-[var(--color-primary)] text-white hover:opacity-95 focus:ring-[var(--color-primary)]',
-    secondary:
-      'bg-[var(--color-secondary)] text-white hover:opacity-95 focus:ring-[var(--color-secondary)]',
-    ghost:
-      'bg-transparent text-[var(--text)] border border-[var(--border)] hover:bg-[color:rgba(0,0,0,.05)]',
-    danger:
-      'bg-[var(--color-error)] text-white hover:opacity-95 focus:ring-[var(--color-error)]',
-    success:
-      'bg-[var(--color-success)] text-white hover:opacity-95 focus:ring-[var(--color-success)]'
+    primary: 'btn btn--primary',
+    secondary: 'btn btn--secondary',
+    ghost: 'btn btn--ghost',
+    danger: 'btn btn--danger',
+    success: 'btn btn--success',
   };
   const sizes = {
-    sm: 'text-sm px-3 py-1.5',
-    md: 'text-sm px-3.5 py-2',
-    lg: 'text-base px-4.5 py-2.5'
+    sm: 'btn--sm',
+    md: 'btn--md',
+    lg: 'btn--lg',
   };
 
   const cls = [base, variants[variant] || variants.primary, sizes[size] || sizes.md, className]

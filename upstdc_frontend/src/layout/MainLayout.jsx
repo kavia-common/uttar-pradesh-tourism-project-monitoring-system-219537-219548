@@ -67,8 +67,19 @@ export default function MainLayout() {
       <div className="main">
         <header className="topbar">
           <button className="icon-btn" onClick={() => setCollapsed(!collapsed)} aria-label="Toggle Sidebar">☰</button>
-          <div className="spacer" />
-          <div className="user">
+          <div style={{ marginLeft: 12, flex: 1, maxWidth: 520 }}>
+            <input
+              className="input"
+              placeholder="Search projects, reports..."
+              aria-label="Quick search"
+              style={{ width: '100%' }}
+            />
+          </div>
+          <div className="actions">
+            <button className="btn btn--sm btn--ghost" aria-label="Notifications">🔔</button>
+            <button className="btn btn--sm btn--ghost" aria-label="Help">❔</button>
+          </div>
+          <div className="user" style={{ marginLeft: 10 }}>
             <span className="user-name">{user?.name || user?.email || 'Guest'}</span>
           </div>
         </header>
