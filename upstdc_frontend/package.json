@@ -12,10 +12,12 @@
     "framer-motion": "^10.18.0"
   },
   "scripts": {
-    "start": "cross-env HOST=0.0.0.0 PORT=3000 react-scripts start",
+    "prestart": "node -e \"const fs=require('fs'); if(!fs.existsSync('node_modules')){console.log('[prestart] node_modules missing -> running install'); process.exit(1);} else {process.exit(0);}\" || npm run ci:install",
+    "start": "cross-env HOST=0.0.0.0 PORT=3000 BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "CI=true react-scripts test --watchAll=false",
     "eject": "react-scripts eject",
+    "postinstall": "echo \"Postinstall complete: dependencies ready\"",
     "ci:install": "npm ci --no-audit --no-fund || npm install --no-audit --no-fund"
   },
   "eslintConfig": {

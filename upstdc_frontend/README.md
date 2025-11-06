@@ -28,6 +28,8 @@ Modern, responsive SPA for the Uttar Pradesh Tourism Project Monitoring System.
 
 2. Install dependencies:
    npm install
+   # In CI/preview environments, you can also use:
+   npm run ci:install
 
 3. Start the app:
    npm start
@@ -36,7 +38,11 @@ Modern, responsive SPA for the Uttar Pradesh Tourism Project Monitoring System.
 
 Note for containers/preview environments:
 - The dev server is configured to bind to 0.0.0.0:3000 so it is reachable externally by the preview system.
-- If you override environment, ensure HOST=0.0.0.0 and PORT=3000 are set (see .env.example).
+- If you override environment, ensure HOST=0.0.0.0 and PORT=3000 are set (see .env.example). We also set BROWSER=none to avoid opening a local browser in CI.
+- If you see "react-scripts: not found", run:
+    npm run ci:install
+  and then retry:
+    npm start
 
 If you see a message about router libraries being installed, run:
    npm ci
