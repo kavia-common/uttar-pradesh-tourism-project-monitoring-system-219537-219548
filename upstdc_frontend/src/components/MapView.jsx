@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
+import { useMapFocus } from './MapFocusContext';
 
 /**
  * Lightweight Map wrapper that attempts to use react-leaflet if available.
@@ -38,6 +39,8 @@ export default function MapView({
   onMapReady,
 }) {
   /** Ensure hooks are always called; do not early-return before hooks. */
+
+  const mapFocus = useMapFocus?.() || null;
 
   // Normalize incoming markers and gracefully skip those without coordinates
   const normalized = useMemo(() => {
@@ -100,6 +103,7 @@ export default function MapView({
     const map = useMap();
     useEffect(() => {
       if (onMapReady) onMapReady(map);
+      if (mapFocus?.registerMap) mapFocus.registerMap(map);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return null;
@@ -121,6 +125,15 @@ export default function MapView({
             ref={(ref) => {
               // Let parent capture marker refs to enable pan/zoom on list click (optional)
               if (ref && onMarkerReady) onMarkerReady(m.raw, ref);
+              // Also register for global focus API (id -> markerRef)
+              try {
+                const id = m.raw?.id || m.raw?._id || m.raw?.code || m.id;
+                if (mapFocus?.registerMarker && id) {
+                  mapFocus.registerMarker(String(id), ref);
+                }
+              } catch {
+                // ignore
+              }
             }}
           >
             <Popup>

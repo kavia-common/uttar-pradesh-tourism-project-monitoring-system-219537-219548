@@ -2,6 +2,7 @@ import React from 'react';
 import { AuthProvider } from './store/auth';
 import ProtectedRoute from './routes/ProtectedRoute';
 import MainLayout from './layout/MainLayout';
+import { MapViewProvider } from './components/MapFocusContext';
 
 import Dashboard from './pages/Dashboard';
 import ProjectsList from './pages/projects/ProjectsList';
@@ -43,24 +44,26 @@ export default function AppRouter() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          {/* Keep ProtectedRoute wrapper for structure, but it now always allows access */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<MainLayout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/projects" element={<ProjectsList />} />
-              <Route path="/projects/new" element={<ProjectForm />} />
-              <Route path="/projects/:id" element={<ProjectView />} />
-              <Route path="/projects/:id/edit" element={<ProjectForm />} />
-              <Route path="/uploads" element={<Uploads />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/help" element={<Help />} />
+        <MapViewProvider>
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            {/* Keep ProtectedRoute wrapper for structure, but it now always allows access */}
+            <Route element={<ProtectedRoute />}>
+              <Route element={<MainLayout />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/projects" element={<ProjectsList />} />
+                <Route path="/projects/new" element={<ProjectForm />} />
+                <Route path="/projects/:id" element={<ProjectView />} />
+                <Route path="/projects/:id/edit" element={<ProjectForm />} />
+                <Route path="/uploads" element={<Uploads />} />
+                <Route path="/reports" element={<Reports />} />
+                <Route path="/help" element={<Help />} />
+              </Route>
             </Route>
-          </Route>
 
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </MapViewProvider>
       </BrowserRouter>
     </AuthProvider>
   );

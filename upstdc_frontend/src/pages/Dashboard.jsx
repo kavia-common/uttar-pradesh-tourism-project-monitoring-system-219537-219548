@@ -1,6 +1,7 @@
 import React from 'react';
 import MapView from '../components/MapView';
 import KPIStat from '../components/ui/KPIStat';
+import { useMapFocus, extractProjectLatLng } from '../components/MapFocusContext';
 
 /**
  * Dashboard uses design tokens, subtle motion (if available), and enhanced map styling.
@@ -22,6 +23,7 @@ const defaultZoom = parseInt(process.env.REACT_APP_DEFAULT_ZOOM || '6', 10);
 const MotionDiv = motion?.motion?.div || 'div';
 
 export default function Dashboard() {
+  const mapFocus = useMapFocus();
   const kpis = [
     { title: 'Active Projects', value: 24, color: 'var(--color-primary)' },
     { title: 'Funds Utilized', value: '₹ 12.4 Cr', color: 'var(--color-accent)' },
@@ -99,7 +101,26 @@ export default function Dashboard() {
 
       <div className="grid" style={{ gridTemplateColumns: '1.2fr .8fr' }}>
         <div className="card hover-rise">
-          <h3 style={{ marginBottom: 8 }}>Project Locations</h3>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+            <h3>Project Locations</h3>
+            <div className="actions">
+              {demoProjects.map((p) => {
+                const has = !!extractProjectLatLng(p);
+                return (
+                  <button
+                    key={p.id}
+                    className="btn btn--sm btn--ghost"
+                    onClick={() => has && mapFocus.focusProject(p, { zoom: Math.max(defaultZoom, 12), openPopup: true })}
+                    disabled={!has}
+                    aria-label={has ? `Locate ${p.name} on map` : `Location not available for ${p.name}`}
+                    title={has ? 'Locate on map' : 'Location not available'}
+                  >
+                    📍 {p.code}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <MapView
             center={[defaultLat, defaultLng]}
             zoom={defaultZoom}
