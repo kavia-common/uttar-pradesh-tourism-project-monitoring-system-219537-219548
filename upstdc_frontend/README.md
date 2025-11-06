@@ -34,6 +34,10 @@ Modern, responsive SPA for the Uttar Pradesh Tourism Project Monitoring System.
    App: http://localhost:3000
    Backend (expected): http://localhost:3001
 
+Note for containers/preview environments:
+- The dev server is configured to bind to 0.0.0.0:3000 so it is reachable externally by the preview system.
+- If you override environment, ensure HOST=0.0.0.0 and PORT=3000 are set (see .env.example).
+
 If you see a message about router libraries being installed, run:
    npm ci
 then retry npm start.
